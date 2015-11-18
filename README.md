@@ -14,7 +14,7 @@ docker run -d -p 9000:9000 -e ZK_HOSTS="<yourhost>:2181" sagent/kafka-manager
 You can configure the following environment variables to configure Kafka Manager
 
 Variable Name       | Configuration Option
-------------------------------------
+--------------------|---------------------------------------------------------
 APPLICATION_SECRET  | The secret key is used to secure cryptographics functions
 APPLICATION_CONTEXT | The context path that the interface runs on (default: /)
 ZK_HOSTS            | Location of your zookeeper quorem (default localhost:2181)
