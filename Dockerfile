@@ -1,16 +1,20 @@
 FROM java:8
 
-ENV KAFKA_MANAGER_VERSION 1.2.9.10
+ENV KAFKA_MANAGER_VERSION 1.3.2.1
 
-RUN wget -qO- -O tmp.zip https://github.com/sagentio/kafka-manager/releases/download/v$KAFKA_MANAGER_VERSION-mesos/kafka-manager-$KAFKA_MANAGER_VERSION.zip \
-	&& unzip tmp.zip -d /opt && rm tmp.zip
+RUN git clone https://github.com/yahoo/kafka-manager.git && cd kafka-manager \
+	&& git fetch origin pull/282/head:0.10.0 && git checkout 0.10.0 \
+	&& ./sbt clean dist \
+	&& unzip /kafka-manager/target/universal/kafka-manager-$KAFKA_MANAGER_VERSION.zip -d /opt \
+	&& rm -r /root/.sbt /root/.ivy2 /kafka-manager
+
 RUN ln -s /opt/kafka-manager-$KAFKA_MANAGER_VERSION /opt/kafka-manager
 
-# Add customizable application.conf
-ADD conf/application.conf /opt/kafka-manager/conf/application.conf
-# Fix logging to stdout using docker conventions
-ADD conf/logger.xml /opt/kafka-manager/conf/logger.xml
+# Fix logging to use only stdout
+ADD logback.xml /opt/kafka-manager/conf/logback.xml
 
 EXPOSE 9000
-ENTRYPOINT [ "/opt/kafka-manager/bin/kafka-manager", "-Dconfig.file=/opt/kafka-manager/conf/application.conf", "-Dlogger.resource=/opt/kafka-manager/conf/logger.xml" ]
 
+WORKDIR "/opt/kafka-manager"
+
+ENTRYPOINT [ "./bin/kafka-manager", "-Dapplication.home=/opt/kafka-manager"]
