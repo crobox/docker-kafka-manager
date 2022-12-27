@@ -1,9 +1,8 @@
-FROM java:8
+FROM openjdk:8
 
-ENV KAFKA_MANAGER_VERSION 1.3.2.1
+ENV KAFKA_MANAGER_VERSION 3.0.0.6
 
 RUN git clone https://github.com/yahoo/kafka-manager.git && cd kafka-manager \
-	&& git fetch origin pull/282/head:0.10.0 && git checkout 0.10.0 \
 	&& ./sbt clean dist \
 	&& unzip /kafka-manager/target/universal/kafka-manager-$KAFKA_MANAGER_VERSION.zip -d /opt \
 	&& rm -r /root/.sbt /root/.ivy2 /kafka-manager
