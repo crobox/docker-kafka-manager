@@ -1,14 +1,13 @@
-FROM java:8
+FROM openjdk:11
 
-ENV KAFKA_MANAGER_VERSION 1.3.2.1
+ENV KAFKA_MANAGER_VERSION 3.0.0.6
 
-RUN git clone https://github.com/yahoo/kafka-manager.git && cd kafka-manager \
-	&& git fetch origin pull/282/head:0.10.0 && git checkout 0.10.0 \
+RUN git clone https://github.com/yahoo/CMAK.git --branch $KAFKA_MANAGER_VERSION && cd CMAK \
 	&& ./sbt clean dist \
-	&& unzip /kafka-manager/target/universal/kafka-manager-$KAFKA_MANAGER_VERSION.zip -d /opt \
-	&& rm -r /root/.sbt /root/.ivy2 /kafka-manager
+	&& unzip /CMAK/target/universal/cmak-$KAFKA_MANAGER_VERSION.zip -d /opt \
+	&& rm -r /root/.sbt /root/.ivy2 /CMAK
 
-RUN ln -s /opt/kafka-manager-$KAFKA_MANAGER_VERSION /opt/kafka-manager
+RUN ln -s /opt/cmak-$KAFKA_MANAGER_VERSION /opt/kafka-manager
 
 # Fix logging to use only stdout
 ADD logback.xml /opt/kafka-manager/conf/logback.xml
